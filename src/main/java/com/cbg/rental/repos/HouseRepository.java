@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.cbg.rental.entities.House;
 import com.cbg.rental.entities.Owner;
 
 @RepositoryRestResource(path = "houses")
+@CrossOrigin("*")
 public interface HouseRepository extends JpaRepository<House, Long> {
 	List<House> findByAddress (String address);
 	List<House> findByAddressContains (String address);

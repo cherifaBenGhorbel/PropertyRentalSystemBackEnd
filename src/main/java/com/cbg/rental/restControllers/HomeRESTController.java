@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cbg.rental.entities.House;
 import com.cbg.rental.service.HouseService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api")
@@ -52,4 +54,9 @@ public class HomeRESTController {
 		return houseService.findByOwnerIdOwner(id);
 	}
 
+	@RequestMapping(value="/house/{add}", method = RequestMethod.GET)
+	public List<House> findByAddressHouseContains(@PathVariable("add") String address) {
+		return houseService.findByAddressContains(address);
+	}
+	
 }
