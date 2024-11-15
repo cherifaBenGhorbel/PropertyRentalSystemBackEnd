@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cbg.rental.entities.House;
 import com.cbg.rental.entities.Owner;
 import com.cbg.rental.repos.OwnerRepository;
-import com.cbg.rental.service.HouseService;
 import com.cbg.rental.service.OwnerService;
 
 @RestController
