@@ -8,32 +8,45 @@ import org.springframework.stereotype.Service;
 import com.cbg.rental.entities.House;
 import com.cbg.rental.entities.Owner;
 import com.cbg.rental.repos.HouseRepository;
+import com.cbg.rental.repos.ImageRepository;
 
 @Service
 public class HouseServiceImpl implements HouseService {
 	@Autowired
 	HouseRepository houseRepository;
 
+	@Autowired
+	ImageRepository imageRepository;
+
 	@Override
 	public House saveHouse(House h) {
 		return houseRepository.save(h);
-				}
+	}
 
 	@Override
 	public House updateHouse(House h) {
+		/*
+		Long oldHousImageId = 
+				this.getHouse(h.getIdHouse()).getImage().getIdImage();
+		Long newHousImageId = h.getImage().getIdImage();
+
+		if(oldHousImageId != newHousImageId) //if the image is modified
+			imageRepository.deleteById(oldHousImageId);
+*/
+
 		return houseRepository.save(h);
 	}
 
 	@Override
 	public void deleteHouse(House h) {
 		houseRepository.delete(h);
-		
+
 	}
 
 	@Override
 	public void deleteHouseById(Long id) {
 		houseRepository.deleteById(id);
-		
+
 	}
 
 	@Override

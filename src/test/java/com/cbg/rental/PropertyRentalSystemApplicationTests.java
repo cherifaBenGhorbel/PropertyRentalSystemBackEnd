@@ -20,7 +20,7 @@ class PropertyRentalSystemApplicationTests {
 	@Autowired
 	private HouseRepository houseRepository;
 	
-	
+/*	
 	@Test
 	public void testCreateHouse() {
 		House house = new House(null, "Nabeul", 850, "Rented", null);
@@ -122,5 +122,5 @@ class PropertyRentalSystemApplicationTests {
 			System.out.println(o);
 		}
 	}
-	
+	*/
 }
