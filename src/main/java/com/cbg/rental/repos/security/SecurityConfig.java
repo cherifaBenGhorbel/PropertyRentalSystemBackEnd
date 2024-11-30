@@ -2,9 +2,11 @@ package com.cbg.rental.repos.security;
 
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,41 +20,43 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true )
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+	
+	@Autowired
+	KeycloakRoleConverter keycloakRoleConverter;
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.csrf(csrf -> csrf.disable())
-				
-				.cors(cors -> cors.configurationSource(new CorsConfigurationSource()
-				{
-				 @Override
-				 public CorsConfiguration getCorsConfiguration(HttpServletRequest
-				request) {
-				 CorsConfiguration cors = new CorsConfiguration();
 
-				cors.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-				cors.setAllowedMethods(Collections.singletonList("*"));
-				cors.setAllowedHeaders(Collections.singletonList("*"));
-				cors.setExposedHeaders(Collections.singletonList("Authorization"));
-				 return cors;
-				 }
-				 }))
+				.cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
+					@Override
+					public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+						CorsConfiguration cors = new CorsConfiguration();
 
-				
-				.authorizeHttpRequests(requests -> 
-				
-				requests.requestMatchers("/api/all/**").hasAnyAuthority("ADMIN" , "USER")
-						.requestMatchers(HttpMethod.GET,"/api/getbyid/**").hasAnyAuthority("ADMIN" , "USER")
-						.requestMatchers(HttpMethod.POST,"/api/addhouse").hasAuthority("ADMIN")
-						.requestMatchers(HttpMethod.PUT,"/api/updatehouse/**").hasAuthority("ADMIN")
-						.requestMatchers(HttpMethod.DELETE,"/api/delhouse/**").hasAuthority("ADMIN")
-				
-						.anyRequest().authenticated() )
-				.addFilterBefore(new JWTAuthorizationFilter(),
-						UsernamePasswordAuthenticationFilter.class);
-		
+						cors.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+						cors.setAllowedMethods(Collections.singletonList("*"));
+						cors.setAllowedHeaders(Collections.singletonList("*"));
+						cors.setExposedHeaders(Collections.singletonList("Authorization"));
+						return cors;
+					}
+				}))
+
+				.authorizeHttpRequests(requests ->
+
+				requests.requestMatchers("/api/all/**").hasAnyAuthority("ADMIN", "USER")
+						.requestMatchers(HttpMethod.GET, "/api/getbyid/**").hasAnyAuthority("ADMIN", "USER")
+						// .requestMatchers(HttpMethod.POST,"/api/addhouse").hasAuthority("ADMIN")
+						.requestMatchers(HttpMethod.PUT, "/api/updatehouse/**").hasAuthority("ADMIN")
+						.requestMatchers(HttpMethod.DELETE, "/api/delhouse/**").hasAuthority("ADMIN")
+
+						.anyRequest().authenticated())
+				// .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
+				.oauth2ResourceServer(rs -> rs.jwt(jwt -> 
+				jwt.jwtAuthenticationConverter(keycloakRoleConverter)));
+
 		return http.build();
 
 	}
